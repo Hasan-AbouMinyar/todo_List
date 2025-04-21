@@ -1,25 +1,23 @@
 <template>
   <div class="container">
+    <h1>Todo List</h1>
+    
     <form @submit.prevent="addTask">
-  <input v-model="newTask.title" type="text" placeholder="عنوان المهمة" required />
-  <input v-model="newTask.description" type="text" placeholder="الوصف" />
-  <label>
-    <input v-model="newTask.completed" type="checkbox" /> مكتملة
-  </label>
-  <button type="submit">إضافة</button>
-</form>
+      <input v-model="newTask.title" placeholder="Title" required />
+      <input v-model="newTask.description" placeholder="Description" />
+      <label>
+        <input type="checkbox" v-model="newTask.completed" />
+        Completed
+      </label>
+      <button type="submit">Add Task</button>
+    </form>
 
-    <h1>📋 قائمة المهام</h1>
-
-    <ul v-if="tasks.length">
+    <ul>
       <li v-for="task in tasks" :key="task.id">
-        <strong>{{ task.title }}</strong> - {{ task.description }}
-        <span v-if="task.completed">✅</span>
-        <span v-else>❌</span>
+        <strong>{{ task.title }}</strong>: {{ task.description }} - 
+        <em>{{ task.completed ? '✅' : '❌' }}</em>
       </li>
     </ul>
-
-    <p v-else>لا توجد مهام بعد.</p>
   </div>
 </template>
 
@@ -27,38 +25,35 @@
 import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-const tasks = ref([])
-
-onMounted(async () => {
-  try {
-    const response = await axios.get('http://127.0.0.1:8000/api/tasks')
-    tasks.value = response.data
-  } catch (error) {
-    console.error("فشل تحميل المهام:", error)
-  }
-})
 const newTask = ref({
   title: '',
   description: '',
-  completed: false,
+  completed: false
 })
+
+const tasks = ref([])
 
 const addTask = async () => {
   try {
-    const response = await axios.post('http://127.0.0.1:8000/api/tasks', newTask.value)
-    tasks.value.push(response.data)
-    newTask.value = { title: '', description: '', completed: false } // Reset
-  } catch (error) {
-    console.error("فشل في الإضافة:", error)
+    const res = await axios.post('http://127.0.0.1:8000/api/tasks', newTask.value)
+    tasks.value.push(res.data)
+    newTask.value = { title: '', description: '', completed: false }
+  } catch (err) {
+    console.error('Error adding task:', err)
   }
 }
 
+onMounted(async () => {
+  const res = await axios.get('http://127.0.0.1:8000/api/tasks')
+  tasks.value = res.data
+})
 </script>
 
-<style scoped>
+<style>
 .container {
   max-width: 600px;
   margin: auto;
   padding: 20px;
 }
 </style>
+ 
