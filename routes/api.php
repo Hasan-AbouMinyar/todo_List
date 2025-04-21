@@ -16,4 +16,8 @@ use App\Http\Controllers\TaskController;
 */
 
 // المسار الرئيسي لتعامل مع CRUD للمهام
+
+Route::get('/tasks', [TaskController::class, 'index']); // ✅ عرض المهام
+Route::post('/tasks', [TaskController::class, 'store']); // ➕ إضافة مهمة
+
 Route::apiResource('tasks', TaskController::class);
