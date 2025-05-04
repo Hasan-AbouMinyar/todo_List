@@ -2,7 +2,7 @@
   <div class="container">
     <h1>Todo List</h1>
 
-    <!-- Form لإضافة مهمة جديدة -->
+    <!-- form to add new task -->
     <form @submit.prevent="addTask">
       <input v-model="newTask.title" placeholder="Title" required />
       <input v-model="newTask.description" placeholder="Description" />
